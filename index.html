@@ -5,178 +5,317 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Particle Simulator</title>
+
+    <!-- Link to Roboto font from Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body {
+        /* Global Reset */
+        /* Global Reset */
+        * {
             margin: 0;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            font-family: 'Arial', sans-serif;
-            background: #000000;
-            color: #ffffff;
-            height: 100vh;
+            padding: 0;
             box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
         }
 
-        canvas {
-            display: block;
-            margin-top: 10px;
-            border: 2px solid #ffffff;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(255, 255, 255, 0.2);
-            max-width: 90%;
-            max-height: 70%;
-        }
-
-        .controls {
+        /* Dark Mode Background */
+        body {
+            background-color: #121212;
+            color: #e0e0e0;
             display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin: 15px;
-            background: #333333;
-            padding: 15px 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
-            width: 90%;
             justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding: 20px;
+            overflow: hidden;
         }
 
-        select,
-        input,
-        button,
-        label {
-            padding: 10px 15px;
-            font-size: 16px;
-            border: none;
-            border-radius: 8px;
-            background: #444444;
-            color: #ffffff;
-            box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease-in-out;
-            max-width: 100%;
+        /* Container Styling */
+        .controls {
+            background: #1f1f1f;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 500px;
+            box-sizing: border-box;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
         }
-        #colorPicker{
-            padding: 10px 15px;
-            font-size: 16px;
+
+        /* Hide Controls Button */
+        #hide-controls {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #416bdf;
+            color: white;
             border: none;
-            border-radius: 8px;
-            color: #ffffff;
-            box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease-in-out;
-            max-width: 100%;
-        }
-        select:hover,
-        input:hover,
-        button:hover,
-        label:hover {
-            background: #555555;
+            padding: 8px;
+            border-radius: 6px;
             cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        #hide-controls:hover {
+            background-color: #2b56a0;
+        }
+
+        .control-group {
+            margin-bottom: 12px;
+            /* Reduced margin for tighter layout */
+        }
+
+        /* Label Styling */
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 6px;
+            color: #bbb;
+        }
+
+        /* Input/Select Styling */
+        input,
+        select,
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 6px;
+            /* Reduced margin */
+            border: 2px solid #333;
+            border-radius: 6px;
+            background-color: #2b2b2b;
+            color: #e0e0e0;
+            font-size: 16px;
+        }
+
+        input[type="number"] {
+            text-align: center;
         }
 
         button {
+            background-color: #3b3b3b;
+            cursor: pointer;
+            transition: background-color 0.3s;
             font-weight: bold;
-            background: linear-gradient(to right, #555555, #777777);
-            color: #ffffff;
-            box-shadow: 0 4px 10px rgba(255, 255, 255, 0.2);
         }
 
         button:hover {
-            background: linear-gradient(to right, #777777, #555555);
+            background-color: #575757;
         }
 
-        input {
-            background: #444444;
-            border: 1px solid #666666;
+        input[type="checkbox"]:checked {
+            background-color: #416bdf;
         }
 
-        input:focus {
-            outline: none;
-            border-color: #777777;
-            box-shadow: 0 0 6px rgba(119, 119, 119, 0.5);
+        /* Custom Color Picker */
+        input[type="color"] {
+            padding: 0;
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
         }
 
-        label {
-            background: #444444;
-            border: 1px solid #666666;
-            font-weight: bold;
+        /* Hover Effects */
+        .control-group:hover {
+            background-color: #3a3a3a;
+            border-radius: 8px;
         }
 
-        label:hover {
-            background: #555555;
-            border-color: transparent;
-        }
-
-        .popup {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: #222222;
-            color: #ffffff;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(255, 255, 255, 0.2);
-            z-index: 1000;
-            text-align: center;
-            width: 90%;
-            max-width: 500px;
-        }
-
-        .popup button {
-            margin-top: 15px;
-        }
-
-        .popup-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
+        /* Canvas Styling */
+        #canvas {
             width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 999;
+            height: 400px;
+            background-color: #121212;
+            border-radius: 12px;
+            margin-top: 30px;
+            border: 2px solid #333;
+            transition: height 0.3s ease-in-out;
         }
+
+        /* Media Queries for Responsiveness */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .controls {
+                padding: 15px;
+                max-width: 100%;
+                margin: 0 auto;
+            }
+
+            #canvas {
+                height: 300px;
+            }
+
+            .control-group {
+                margin-bottom: 10px;
+                /* Further reduce margin on smaller screens */
+            }
+
+            label {
+                font-size: 12px;
+            }
+
+            input,
+            select,
+            button {
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
+            .controls {
+                padding: 10px;
+                max-width: 100%;
+            }
+
+            .control-group {
+                margin-bottom: 8px;
+                /* Further reduce margin on mobile */
+            }
+
+            label {
+                font-size: 12px;
+            }
+
+            input,
+            select,
+            button {
+                font-size: 12px;
+                padding: 10px;
+            }
+
+            #canvas {
+                height: 250px;
+            }
+
+
+        }
+
+            /* Basic styling for the popup overlay */
+            .popup-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+                display: none;
+                /* Hidden by default */
+                z-index: 9999;
+            }
+
+            /* Popup container styling */
+            .popup {
+                display:none;
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background-color: #fff;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                z-index: 10000;
+                width: 300px;
+                text-align: center;
+                display: none;
+                /* Hidden by default */
+            }
+
+            /* Popup title */
+            .popup h2 {
+                margin-bottom: 15px;
+                font-size: 1.5em;
+                color: #333;
+            }
+
+            /* Popup text list */
+            .popup ul {
+                list-style: none;
+                padding-left: 0;
+                margin-bottom: 20px;
+            }
+
+            /* Button styling */
+            #close-popup {
+                padding: 10px 20px;
+                background-color: #FFA208;
+                color: #fff;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+            }
+
+            /* Button hover effect */
+            #close-popup:hover {
+                background-color: #e68a00;
+            }
     </style>
 </head>
 
 <body>
     <div class="controls">
-        <label for="shape">Particle Shape:</label>
-        <select id="shape">
-            <option value="circle">Circle</option>
-            <option value="square">Square</option>
-        </select>
+        <div class="control-group">
+            <label for="shape">Particle Shape</label>
+            <select id="shape">
+                <option value="circle">Circle</option>
+                <option value="square">Square</option>
+            </select>
+        </div>
+        <div class="control-group">
+            <label for="count">Particle Count</label>
+            <input type="number" id="count" min="1" value="256" placeholder="Particles Count">
+        </div>
 
-        <label for="count">Number of Particles:</label>
-        <input type="number" id="count" min="1" value="256">
+        <div class="control-group">
+            <label for="container">Container</label>
+            <select id="container">
+                <option value="rectangle">Rectangle</option>
+                <option value="circle">Circle</option>
+            </select>
+        </div>
 
-        <label for="container">Container Shape:</label>
-        <select id="container">
-            <option value="rectangle">Rectangle</option>
-            <option value="circle">Circle</option>
-        </select>
+        <div class="control-group">
+            <label for="gravity">Enable Gravity</label>
+            <input type="checkbox" id="gravity">
+        </div>
 
-        <label for="gravity">Gravity:</label>
-        <input type="checkbox" id="gravity">
+        <div class="control-group">
+            <label for="mode">Mode</label>
+            <select id="mode">
+                <option value="pull">Pull</option>
+                <option value="push">Push</option>
+            </select>
+        </div>
 
-        <label for="mode">Interaction Mode:</label>
-        <select id="mode">
-            <option value="pull">Pull</option>
-            <option value="push">Push</option>
-        </select>
-        <select id="CollisionType">
-            <option value="fluid">FluidCollision</option>
-            <option value="bouncy">Bouncy</option>
-        </select>
-        <div id="controls">
-            <label for="colorPicker">Particle Color: </label>
-            <input type="color" id="colorPicker"  value="#416bdf">
-            
-            <label for="blendCheckbox">Enable Blending: </label>
+        <div class="control-group">
+            <label for="CollisionType">Collision Type</label>
+            <select id="CollisionType">
+                <option value="fluid">FluidCollision</option>
+                <option value="bouncy">Bouncy</option>
+            </select>
+        </div>
+
+        <div id="controls" class="control-group">
+            <label for="colorPicker">Pick a color</label>
+            <input type="color" id="colorPicker" value="#FFA208">
+        </div>
+
+        <div class="control-group">
+            <label for="blendCheckbox">Enable Single Color</label>
             <input type="checkbox" id="blendCheckbox" checked>
-          </div>
-          <canvas id="particleCanvas"></canvas>
-          
+        </div>
+
         <button id="spawn">Spawn Particles</button>
     </div>
 
@@ -185,20 +324,18 @@
     <div class="popup-overlay" id="popup-overlay"></div>
     <div class="popup" id="popup">
         <h2>Welcome to the Particle Simulator</h2>
-        <p>
-            Use the controls above to customize your particle simulation. You can:
-        </p>
+        <p>Use the controls above to customize your particle simulation. You can:</p>
         <ul style="text-align: left;">
             <li>Choose the shape of particles and their container.</li>
             <li>Enable or disable gravity.</li>
             <li>Adjust the number of particles.</li>
             <li>Change interaction mode between "Pull" and "Push".</li>
         </ul>
-        <p>
-            Click anywhere on the canvas to apply force to the particles.
-        </p>
+        <p>Click anywhere on the canvas to apply force to the particles.</p>
         <button id="close-popup">Got it!</button>
     </div>
+
+
     <script>
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
@@ -214,24 +351,24 @@
         canvas.height = window.innerHeight * 0.7;
 
         const colorPicker = document.getElementById("colorPicker");
-const blendCheckbox = document.getElementById("blendCheckbox");
+        const blendCheckbox = document.getElementById("blendCheckbox");
 
-let particleColor = "#D38301";
-let blendingEnabled = true;
+        let particleColor = "#D38301";
+        let blendingEnabled = true;
 
-// Update color and blending mode on user input
-colorPicker.addEventListener("input", (event) => {
-  particleColor = event.target.value;
-});
+        // Update color and blending mode on user input
+        colorPicker.addEventListener("input", (event) => {
+            particleColor = event.target.value;
+        });
 
-blendCheckbox.addEventListener("change", (event) => {
-  blendingEnabled = event.target.checked;
-});
-const colorBox = document.getElementById('colorBox'); // This would be the element displaying the color preview (create this in your HTML if it doesn't exist)
+        blendCheckbox.addEventListener("change", (event) => {
+            blendingEnabled = event.target.checked;
+        });
+        const colorBox = document.getElementById('colorBox'); // This would be the element displaying the color preview (create this in your HTML if it doesn't exist)
 
-colorPicker.addEventListener('input', () => {
-    colorBox.style.backgroundColor = colorPicker.value;
-});
+        colorPicker.addEventListener('input', () => {
+            colorBox.style.backgroundColor = colorPicker.value;
+        });
 
         let particles = [];
         let containerShape = 'rectangle';
@@ -255,10 +392,9 @@ colorPicker.addEventListener('input', () => {
 
             draw() {
 
-                if(blendingEnabled)
-                {
+                if (blendingEnabled) {
                     ctx.fillStyle = particleColor;
-                }else{
+                } else {
                     ctx.fillStyle = this.color;
                 }
                 if (this.shape === 'circle') {
@@ -384,7 +520,7 @@ colorPicker.addEventListener('input', () => {
                 const distance = Math.sqrt(dx * dx + dy * dy);
 
                 const force = Math.min(200 / (distance + 1), 10);
-                const direction =  modeSelector.value === 'pull' ? 1 : -1;
+                const direction = modeSelector.value === 'pull' ? 1 : -1;
 
                 p.vx += direction * force * (dx / distance);
                 p.vy += direction * force * (dy / distance);
@@ -457,10 +593,12 @@ colorPicker.addEventListener('input', () => {
         let isDragging = false;
 
         canvas.addEventListener('mousedown', (event) => {
+            event.preventDefault();
             isDragging = true;
         });
 
         canvas.addEventListener('mousemove', (event) => {
+            event.preventDefault();
             if (isDragging) {
                 const rect = canvas.getBoundingClientRect();
                 const x = event.clientX - rect.left;
@@ -469,18 +607,22 @@ colorPicker.addEventListener('input', () => {
             }
         });
 
-        canvas.addEventListener('mouseup', () => {
+        canvas.addEventListener('mouseup', (event) => {
+            event.preventDefault();
             isDragging = false;
         });
 
-        canvas.addEventListener('mouseleave', () => {
+        canvas.addEventListener('mouseleave', (event) => {
+            event.preventDefault();
             isDragging = false; // Stop dragging if the cursor leaves the canvas
         });
         canvas.addEventListener('touchstart', (event) => {
+            event.preventDefault();
             isDragging = true;
         });
 
         canvas.addEventListener('touchmove', (event) => {
+            event.preventDefault();
             if (isDragging) {
                 const rect = canvas.getBoundingClientRect();
                 const x = event.touches[0].clientX - rect.left;
@@ -489,11 +631,12 @@ colorPicker.addEventListener('input', () => {
             }
         });
 
-        canvas.addEventListener('touchend', () => {
+        canvas.addEventListener('touchend', (event) => {
+            event.preventDefault();
             isDragging = false;
         });
 
-        canvas.addEventListener('touchcancel', () => {
+        canvas.addEventListener('touchcancel', (event) => {
             isDragging = false;
         });
 
