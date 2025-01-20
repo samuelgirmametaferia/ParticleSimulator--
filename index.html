@@ -64,7 +64,7 @@
         }
 
         .control-group {
-            margin-bottom: 12px;
+            margin-bottom: 6px;
             /* Reduced margin for tighter layout */
         }
 
@@ -121,7 +121,7 @@
 
         /* Hover Effects */
         .control-group:hover {
-            background-color: #3a3a3a;
+            background-color: 121212;
             border-radius: 8px;
         }
 
@@ -201,65 +201,122 @@
 
         }
 
-            /* Basic styling for the popup overlay */
-            .popup-overlay {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background-color: rgba(0, 0, 0, 0.5);
-                display: none;
-                /* Hidden by default */
-                z-index: 9999;
-            }
+        /* Basic styling for the popup overlay */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            /* Hidden by default */
+            z-index: 9999;
+        }
 
-            /* Popup container styling */
-            .popup {
-                display:none;
-                position: fixed;
-                top: 51%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                background-color: #fff;
-                padding: 20px;
-                border-radius: 8px;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-                z-index: 10000;
-                width: 300px;
-                text-align: center;
-                display: none;
-                /* Hidden by default */
-            }
+        /* Popup container styling */
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 10000;
+            width: 300px;
+            text-align: center;
+            display: none;
+            /* Hidden by default */
+        }
 
-            /* Popup title */
-            .popup h2 {
-                margin-bottom: 15px;
-                font-size: 1.5em;
-                color: #333;
-            }
+        /* Popup title */
+        .popup h2 {
+            margin-bottom: 15px;
+            font-size: 1.5em;
+            color: #333;
+        }
 
-            /* Popup text list */
-            .popup ul {
-                list-style: none;
-                padding-left: 0;
-                margin-bottom: 20px;
-            }
+        /* Popup text list */
+        .popup ul {
+            list-style: none;
+            padding-left: 0;
+            margin-bottom: 20px;
+        }
 
-            /* Button styling */
-            #close-popup {
-                padding: 10px 20px;
-                background-color: #FFA208;
-                color: #fff;
-                border: none;
-                border-radius: 5px;
-                cursor: pointer;
-            }
+        /* Button styling */
+        #close-popup {
+            padding: 10px 20px;
+            background-color: #FFA208;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
 
-            /* Button hover effect */
-            #close-popup:hover {
-                background-color: #e68a00;
-            }
+        /* Button hover effect */
+        #close-popup:hover {
+            background-color: #e68a00;
+        }
+
+        /* General styling for all checkbox containers */
+        .checkbox-container {
+            display: inline-flex;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        /* Hide the default checkbox */
+        .checkbox {
+            display: none;
+        }
+
+        /* Custom checkbox style */
+        .checkbox-custom {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #aaa;
+            /* Default border color */
+            border-radius: 4px;
+            /* Barely rounded corners */
+            position: relative;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        /* Custom check mark for checked state */
+        .checkbox:checked+.checkbox-custom::after {
+            content: '';
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            width: 12px;
+            height: 12px;
+            background-color: #1D6E91;
+            /* Flat check mark */
+        }
+
+        /* Custom styling when the checkbox is checked */
+        .checkbox:checked+.checkbox-custom {
+            border-color: #1D6E91;
+            /* Ocean blue border */
+            background-color: #E0F7FA;
+            /* Light aqua background when checked */
+        }
+
+        /* Hover effect for checkbox */
+        .checkbox-custom:hover {
+            border-color: #1D6E91;
+            /* Change border color on hover */
+        }
+
+        /* Focus outline for accessibility */
+        .checkbox:focus+.checkbox-custom {
+            box-shadow: 0 0 0 2px rgba(29, 110, 145, 0.4);
+            /* Ocean blue outline */
+        }
     </style>
 </head>
 
@@ -272,6 +329,7 @@
                 <option value="square">Square</option>
             </select>
         </div>
+
         <div class="control-group">
             <label for="count">Particle Count</label>
             <input type="number" id="count" min="1" value="256" placeholder="Particles Count">
@@ -287,7 +345,10 @@
 
         <div class="control-group">
             <label for="gravity">Enable Gravity</label>
-            <input type="checkbox" id="gravity">
+            <label class="checkbox-container">
+                <input type="checkbox" id="gravity" class="checkbox">
+                <span class="checkbox-custom"></span>
+            </label>
         </div>
 
         <div class="control-group">
@@ -313,7 +374,18 @@
 
         <div class="control-group">
             <label for="blendCheckbox">Enable Single Color</label>
-            <input type="checkbox" id="blendCheckbox" checked>
+            <label class="checkbox-container">
+                <input type="checkbox" id="blendCheckbox" checked class="checkbox">
+                <span class="checkbox-custom"></span>
+            </label>
+        </div>
+
+        <div class="control-group">
+            <label for="velocityColorCheckbox">Color by Velocity</label>
+            <label class="checkbox-container">
+                <input type="checkbox" id="velocityColorCheckbox" class="checkbox">
+                <span class="checkbox-custom"></span>
+            </label>
         </div>
 
         <button id="spawn">Spawn Particles</button>
@@ -389,10 +461,31 @@
                 this.color = `hsl(${Math.random() * 360}, 100%, 50%)`;
                 this.shape = shape;
             }
+            getSpeed() {
+                return Math.sqrt(this.vx ** 2 + this.vy ** 2);
+            }
+            static interpolateColor(color1, color2, factor) {
+                const c1 = parseInt(color1.slice(1), 16);
+                const c2 = parseInt(color2.slice(1), 16);
 
+                const r1 = (c1 >> 16) & 255, g1 = (c1 >> 8) & 255, b1 = c1 & 255;
+                const r2 = (c2 >> 16) & 255, g2 = (c2 >> 8) & 255, b2 = c2 & 255;
+
+                const r = Math.round(r1 + factor * (r2 - r1));
+                const g = Math.round(g1 + factor * (g2 - g1));
+                const b = Math.round(b1 + factor * (b2 - b1));
+
+                return `rgb(${r}, ${g}, ${b})`;
+            }
             draw() {
+                const velocityColorCheckbox = document.getElementById("velocityColorCheckbox");
+                if (velocityColorCheckbox.checked) {
+                    const speed = this.getSpeed();
+                    const hue = Math.min(240, Math.max(0, 240 - speed * 50)); // Adjust the multiplier for desired color effect
+                    ctx.fillStyle = `hsl(${hue}, 100%, 50%)`;
 
-                if (blendingEnabled) {
+                }
+                else if (blendingEnabled) {
                     ctx.fillStyle = particleColor;
                 } else {
                     ctx.fillStyle = this.color;
@@ -585,13 +678,24 @@
         }
 
         canvas.addEventListener('click', (event) => {
-            const rect = canvas.getBoundingClientRect();
-            const x = event.clientX - rect.left;
-            const y = event.clientY - rect.top;
+            const { x, y } = getAdjustedCoordinates(event);
             applyForce(x, y);
         });
         let isDragging = false;
-
+        function getAdjustedCoordinates(event) {
+            const rect = canvas.getBoundingClientRect();
+            let x, y;
+            if (event.touches) {
+                // For touch events
+                x = event.touches[0].clientX - rect.left + rect.left * 0.3;
+                y = event.touches[0].clientY - rect.top;
+            } else {
+                // For mouse events
+                x = event.clientX - rect.left;
+                y = event.clientY - rect.top;
+            }
+            return { x, y };
+        }
         canvas.addEventListener('mousedown', (event) => {
             event.preventDefault();
             isDragging = true;
@@ -600,9 +704,7 @@
         canvas.addEventListener('mousemove', (event) => {
             event.preventDefault();
             if (isDragging) {
-                const rect = canvas.getBoundingClientRect();
-                const x = event.clientX - rect.left;
-                const y = event.clientY - rect.top;
+                const { x, y } = getAdjustedCoordinates(event);
                 applyForce(x, y);
             }
         });
@@ -624,9 +726,7 @@
         canvas.addEventListener('touchmove', (event) => {
             event.preventDefault();
             if (isDragging) {
-                const rect = canvas.getBoundingClientRect();
-                const x = event.touches[0].clientX - rect.left;
-                const y = event.touches[0].clientY - rect.top;
+                const { x, y } = getAdjustedCoordinates(event);
                 applyForce(x, y);
             }
         });
