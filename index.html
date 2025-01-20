@@ -740,13 +740,19 @@
         canvas.addEventListener('touchcancel', (event) => {
             isDragging = false;
         });
-
+        let c = 0;
         spawnButton.addEventListener('click', () => {
             const shape = shapeSelector.value;
             const count = parseInt(countInput.value, 10);
             containerShape = containerSelector.value;
             gravityEnabled = gravityCheckbox.checked;
             interactionMode = modeSelector.value;
+            if(count > 256 && c==0)
+            {
+                alert("The next message will only be displayed once!");
+                alert("Due to the limitations of CPU based particles increase your particle count at your own discretion!");
+                c=1;
+            }
             spawnParticles(shape, count);
         });
 
