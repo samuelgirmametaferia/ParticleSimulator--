@@ -1,4 +1,7 @@
 ---
+title: "Particle Simulator"
+layout: default
+---
 
 # Particle Simulator
 
@@ -53,9 +56,6 @@ The simulator uses the **HTML5 canvas** to draw and animate the particles. The p
 4. Interact with the canvas by clicking or dragging to apply forces to the particles.
 5. Observe the particles' behavior based on the selected parameters.
 
---
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
-
----
