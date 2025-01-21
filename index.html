@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Particle Simulator</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
     <!-- Link to Roboto font from Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
@@ -421,6 +422,47 @@
     </div>
 
 <script>
+    alert("Hello! Particle Simulator is a physics based particle simulator!");
+    alert("The goal of Particle Simulator is to encourage interactive learning!");
+    alert("Explore how particles act under different circumstances!");
+        Swal.fire({
+                title: title,
+                html: text,
+                icon: icon,
+                confirmButtonText: 'OK'
+            });
+        }
+
+        // Function to display the information pop-up
+        function showInfoPopup() {
+            Swal.fire({
+                title: 'Welcome to Particle Simulator!',
+                html: `
+                    <p>This tool allows you to explore the fascinating world of particles and particle systems!</p>
+                    <h3>Features:</h3>
+                    <ul style="text-align: left;">
+                        <li><strong>Interactive Particles:</strong> Click and drag to push/push particles!</li>
+                        <li><strong>Collision Types:</strong> Choose between different collision types to demonstrate different types of particles!</li>
+                        <li><strong>Coloring:</strong> Modify our different color settings to visualize different properties of particles!</li>
+                        <li><strong>Choose different container & particle types</strong> Particle Simulator provides different options for container & particle shapes</li>
+                        
+                    </ul>
+                    <h3>How to Use:</h3>
+                    <ol style="text-align: left;">
+                        <li>Navigate through the different settings or use the default settings.</li>
+    
+                        <li>Click the "Spawn Particles" button to spawn your particles and if you want to change particle/container shapes.</li>
+                    </ol>
+                    <p>Enjoy exploring the intricate simulations you can construct!</p>
+                `,
+                icon: 'info',
+                confirmButtonText: 'Get Started',
+                width: '600px'
+            });
+        }
+    window.onload = function () {
+            showInfoPopup();
+    };
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
     const shapeSelector = document.getElementById('shape');
