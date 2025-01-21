@@ -323,18 +323,6 @@
 </head>
 
 <body>
-    <div class="popup" id="popup">
-        <h2>Welcome to the Particle Simulator</h2>
-        <p>This application is a physics-based particle simulator designed to demonstrate fundamental physics principles in an interactive environment.</p>
-        <h3>Features:</h3>
-        <ul style="text-align: left;">
-            <li><strong>Interactive Controls:</strong> Customize particle shapes, count, and behavior.</li>
-            <li><strong>Real-Time Physics:</strong> Observe particles interacting under forces like gravity and collision.</li>
-            <li><strong>Dynamic Visualization:</strong> Change particle colors and interaction modes for varied simulations.</li>
-        </ul>
-        <p>Use the controls to modify the simulation parameters and watch how particles respond to different physical forces. Click anywhere on the canvas to apply additional forces and influence particle movement.</p>
-        <button id="close-popup">Got it!</button>
-    </div>
     <div class="controls">
         <div class="control-group">
             <label for="shape">Particle Shape</label>
@@ -406,20 +394,6 @@
     </div>
 
     <canvas id="canvas"></canvas>
-
-    <div class="popup-overlay" id="popup-overlay"></div>
-    <div class="popup" id="popup">
-        <h2>Welcome to the Particle Simulator</h2>
-        <p>Use the controls above to customize your particle simulation. You can:</p>
-        <ul style="text-align: left;">
-            <li>Choose the shape of particles and their container.</li>
-            <li>Enable or disable gravity.</li>
-            <li>Adjust the number of particles.</li>
-            <li>Change interaction mode between "Pull" and "Push".</li>
-        </ul>
-        <p>Click anywhere on the canvas to apply force to the particles.</p>
-        <button id="close-popup">Got it!</button>
-    </div>
 
 <script>
     alert("Hello! Particle Simulator is a physics based particle simulator!");
