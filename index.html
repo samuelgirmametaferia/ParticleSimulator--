@@ -420,372 +420,393 @@
         <button id="close-popup">Got it!</button>
     </div>
 
+<script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const shapeSelector = document.getElementById('shape');
+    const countInput = document.getElementById('count');
+    const containerSelector = document.getElementById('container');
+    const gravityCheckbox = document.getElementById('gravity');
+    const modeSelector = document.getElementById('mode');
+    const spawnButton = document.getElementById('spawn');
+    const closeP = document.getElementById("close-popup");
+    const typeOfCollision = document.getElementById("CollisionType");
+    canvas.width = window.innerWidth * 0.9;
+    canvas.height = window.innerHeight * 0.7;
 
-    <script>
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
-        const shapeSelector = document.getElementById('shape');
-        const countInput = document.getElementById('count');
-        const containerSelector = document.getElementById('container');
-        const gravityCheckbox = document.getElementById('gravity');
-        const modeSelector = document.getElementById('mode');
-        const spawnButton = document.getElementById('spawn');
-        const closeP = document.getElementById("close-popup");
-        const typeOfCollision = document.getElementById("CollisionType");
-        canvas.width = window.innerWidth * 0.9;
-        canvas.height = window.innerHeight * 0.7;
+    const colorPicker = document.getElementById("colorPicker");
+    const blendCheckbox = document.getElementById("blendCheckbox");
 
-        const colorPicker = document.getElementById("colorPicker");
-        const blendCheckbox = document.getElementById("blendCheckbox");
+    let particleColor = "#D38301";
+    let blendingEnabled = true;
 
-        let particleColor = "#D38301";
-        let blendingEnabled = true;
+    // Update color and blending mode on user input
+    colorPicker.addEventListener("input", (event) => {
+        particleColor = event.target.value;
+    });
 
-        // Update color and blending mode on user input
-        colorPicker.addEventListener("input", (event) => {
-            particleColor = event.target.value;
-        });
+    blendCheckbox.addEventListener("change", (event) => {
+        blendingEnabled = event.target.checked;
+    });
 
-        blendCheckbox.addEventListener("change", (event) => {
-            blendingEnabled = event.target.checked;
-        });
-        const colorBox = document.getElementById('colorBox'); // This would be the element displaying the color preview (create this in your HTML if it doesn't exist)
+    let particles = [];
+    let containerShape = 'rectangle';
+    let gravityEnabled = false;
+    let interactionMode = 'pull';
 
-        colorPicker.addEventListener('input', () => {
-            colorBox.style.backgroundColor = colorPicker.value;
-        });
+    // Function to close the popup
+    function closePopup() {
+        const popup = document.getElementById('popup');
+        const popupOverlay = document.getElementById('popup-overlay');
+        popup.style.display = 'none';
+        popupOverlay.style.display = 'none';
+        document.body.style.overflow = 'auto'; // Enable scrolling
+    }
 
-        let particles = [];
-        let containerShape = 'rectangle';
-        let gravityEnabled = false;
-        let interactionMode = 'pull';
-        closeP.addEventListener('click', () => {
-            document.getElementById('popup').style.display = 'none';
-            document.getElementById('popup-overlay').style.display = 'none';
-        });
+    // Event listener for the "Got it!" button
+    closeP.addEventListener('click', closePopup);
 
-        class Particle {
-            constructor(x, y, shape) {
-                this.x = x;
-                this.y = y;
-                this.vx = Math.random() * 2 - 1;
-                this.vy = Math.random() * 2 - 1;
-                this.size = Math.random() * 10 + 10;
-                this.color = `hsl(${Math.random() * 360}, 100%, 50%)`;
-                this.shape = shape;
-            }
-            getSpeed() {
-                return Math.sqrt(this.vx ** 2 + this.vy ** 2);
-            }
-            static interpolateColor(color1, color2, factor) {
-                const c1 = parseInt(color1.slice(1), 16);
-                const c2 = parseInt(color2.slice(1), 16);
-
-                const r1 = (c1 >> 16) & 255, g1 = (c1 >> 8) & 255, b1 = c1 & 255;
-                const r2 = (c2 >> 16) & 255, g2 = (c2 >> 8) & 255, b2 = c2 & 255;
-
-                const r = Math.round(r1 + factor * (r2 - r1));
-                const g = Math.round(g1 + factor * (g2 - g1));
-                const b = Math.round(b1 + factor * (b2 - b1));
-
-                return `rgb(${r}, ${g}, ${b})`;
-            }
-            draw() {
-                const velocityColorCheckbox = document.getElementById("velocityColorCheckbox");
-                if (velocityColorCheckbox.checked) {
-                    const speed = this.getSpeed();
-                    const hue = Math.min(240, Math.max(0, 240 - speed * 50)); // Adjust the multiplier for desired color effect
-                    ctx.fillStyle = `hsl(${hue}, 100%, 50%)`;
-
-                }
-                else if (blendingEnabled) {
-                    ctx.fillStyle = particleColor;
-                } else {
-                    ctx.fillStyle = this.color;
-                }
-                if (this.shape === 'circle') {
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y, this.size / 2, 0, Math.PI * 2);
-                    ctx.fill();
-                } else {
-                    ctx.fillRect(this.x - this.size / 2, this.y - this.size / 2, this.size, this.size);
-                }
-            }
-
-            update() {
-                if (gravityCheckbox.checked) {
-                    this.vy += 0.1;
-                }
-
-                this.x += this.vx;
-                this.y += this.vy;
-
-                if (containerShape === 'rectangle') {
-                    if (this.x - this.size / 2 < 0 || this.x + this.size / 2 > canvas.width) {
-                        this.vx *= -1;
-                        this.x = Math.max(this.size / 2, Math.min(this.x, canvas.width - this.size / 2));
-                    }
-                    if (this.y - this.size / 2 < 0 || this.y + this.size / 2 > canvas.height) {
-                        this.vy *= -0.8;
-                        this.y = Math.max(this.size / 2, Math.min(this.y, canvas.height - this.size / 2));
-                    }
-                } else if (containerShape === 'circle') {
-                    const cx = canvas.width / 2;
-                    const cy = canvas.height / 2;
-                    const radius = Math.min(canvas.width, canvas.height) / 2 - this.size / 2;
-                    const dx = this.x - cx;
-                    const dy = this.y - cy;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-                    if (distance > radius) {
-                        const angle = Math.atan2(dy, dx);
-                        this.x = cx + radius * Math.cos(angle);
-                        this.y = cy + radius * Math.sin(angle);
-                        this.vx *= -1;
-                        this.vy *= -1;
-                    }
-                }
-            }
+    class Particle {
+        constructor(x, y, shape) {
+            this.x = x;
+            this.y = y;
+            this.vx = Math.random() * 2 - 1;
+            this.vy = Math.random() * 2 - 1;
+            this.size = Math.random() * 10 + 10;
+            this.color = `hsl(${Math.random() * 360}, 100%, 50%)`;
+            this.shape = shape;
         }
-        function detectCollisionsFluid() {
-            for (let i = 0; i < particles.length; i++) {
-                for (let j = i + 1; j < particles.length; j++) {
-                    const p1 = particles[i];
-                    const p2 = particles[j];
+        getSpeed() {
+            return Math.sqrt(this.vx ** 2 + this.vy ** 2);
+        }
+        static interpolateColor(color1, color2, factor) {
+            const c1 = parseInt(color1.slice(1), 16);
+            const c2 = parseInt(color2.slice(1), 16);
 
-                    const dx = p1.x - p2.x;
-                    const dy = p1.y - p2.y;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-                    const minDist = (p1.size + p2.size) / 2;
+            const r1 = (c1 >> 16) & 255, g1 = (c1 >> 8) & 255, b1 = c1 & 255;
+            const r2 = (c2 >> 16) & 255, g2 = (c2 >> 8) & 255, b2 = c2 & 255;
 
-                    if (distance < minDist) {
-                        const angle = Math.atan2(dy, dx);
-                        const overlap = minDist - distance;
+            const r = Math.round(r1 + factor * (r2 - r1));
+            const g = Math.round(g1 + factor * (g2 - g1));
+            const b = Math.round(b1 + factor * (b2 - b1));
 
-                        p1.x += Math.cos(angle) * overlap / 2;
-                        p1.y += Math.sin(angle) * overlap / 2;
-                        p2.x -= Math.cos(angle) * overlap / 2;
-                        p2.y -= Math.sin(angle) * overlap / 2;
+            return `rgb(${r}, ${g}, ${b})`;
+        }
+        draw() {
+            const velocityColorCheckbox = document.getElementById("velocityColorCheckbox");
+            if (velocityColorCheckbox.checked) {
+                const speed = this.getSpeed();
+                const hue = Math.min(240, Math.max(0, 240 - speed * 50)); // Adjust the multiplier for desired color effect
+                ctx.fillStyle = `hsl(${hue}, 100%, 50%)`;
 
-                        const vxTotal = p1.vx - p2.vx;
-                        const vyTotal = p1.vy - p2.vy;
-
-                        p1.vx -= vxTotal * 0.5;
-                        p1.vy -= vyTotal * 0.5;
-                        p2.vx += vxTotal * 0.5;
-                        p2.vy += vyTotal * 0.5;
-                    }
-                }
             }
-        }
-
-        function detectCollisions() {
-            for (let i = 0; i < particles.length; i++) {
-                for (let j = i + 1; j < particles.length; j++) {
-                    const p1 = particles[i];
-                    const p2 = particles[j];
-
-                    const dx = p1.x - p2.x;
-                    const dy = p1.y - p2.y;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-                    const minDist = (p1.size + p2.size) / 2;
-
-                    if (distance < minDist) {
-                        const angle = Math.atan2(dy, dx);
-                        const overlap = minDist - distance;
-
-                        // Separate the particles
-                        p1.x += Math.cos(angle) * overlap / 2;
-                        p1.y += Math.sin(angle) * overlap / 2;
-                        p2.x -= Math.cos(angle) * overlap / 2;
-                        p2.y -= Math.sin(angle) * overlap / 2;
-
-                        // Adjust velocities (elastic collision)
-                        const vxTotal = p1.vx - p2.vx;
-                        const vyTotal = p1.vy - p2.vy;
-
-                        const nx = Math.cos(angle);
-                        const ny = Math.sin(angle);
-
-                        const p1Impact = (vxTotal * nx + vyTotal * ny) * nx;
-                        const p2Impact = -(vxTotal * nx + vyTotal * ny) * nx;
-
-                        p1.vx -= p1Impact;
-                        p1.vy -= p1Impact * (ny / nx);
-                        p2.vx -= p2Impact;
-                        p2.vy -= p2Impact * (ny / nx);
-                    }
-                }
-            }
-        }
-
-
-        function applyForce(x, y) {
-            particles.forEach(p => {
-                const dx = x - p.x;
-                const dy = y - p.y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-
-                const force = Math.min(200 / (distance + 1), 10);
-                const direction = modeSelector.value === 'pull' ? 1 : -1;
-
-                p.vx += direction * force * (dx / distance);
-                p.vy += direction * force * (dy / distance);
-            });
-        }
-        function spawnParticles(shape, count) {
-            particles = [];
-            for (let i = 0; i < count; i++) {
-                let valid = false;
-                let x, y;
-                while (!valid) {
-                    x = Math.random() * canvas.width;
-                    y = Math.random() * canvas.height;
-                    valid = true;
-
-                    for (let j = 0; j < particles.length; j++) {
-                        const other = particles[j];
-                        const dx = x - other.x;
-                        const dy = y - other.y;
-                        const distance = Math.sqrt(dx * dx + dy * dy);
-
-                        if (distance < other.size) { // Ensure no overlap
-                            valid = false;
-                            break;
-                        }
-                    }
-                }
-                particles.push(new Particle(x, y, shape));
-            }
-        }
-
-
-        function animate() {
-
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            if (blendingEnabled) {
-                ctx.globalCompositeOperation = "screen"; // Blending mode
+            else if (blendingEnabled) {
+                ctx.fillStyle = particleColor;
             } else {
-                ctx.globalCompositeOperation = "source-over"; // Normal mode
+                ctx.fillStyle = this.color;
             }
-            if (containerShape === 'circle') {
+            if (this.shape === 'circle') {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size / 2, 0, Math.PI * 2);
+                ctx.fill();
+            } else {
+                ctx.fillRect(this.x - this.size / 2, this.y - this.size / 2, this.size, this.size);
+            }
+        }
+
+        update() {
+            if (gravityCheckbox.checked) {
+                this.vy += 0.1;
+            }
+
+            this.x += this.vx;
+            this.y += this.vy;
+
+            if (containerShape === 'rectangle') {
+                if (this.x - this.size / 2 < 0 || this.x + this.size / 2 > canvas.width) {
+                    this.vx *= -1;
+                    this.x = Math.max(this.size / 2, Math.min(this.x, canvas.width - this.size / 2));
+                }
+                if (this.y - this.size / 2 < 0 || this.y + this.size / 2 > canvas.height) {
+                    this.vy *= -0.8;
+                    this.y = Math.max(this.size / 2, Math.min(this.y, canvas.height - this.size / 2));
+                }
+            } else if (containerShape === 'circle') {
                 const cx = canvas.width / 2;
                 const cy = canvas.height / 2;
-                const radius = Math.min(canvas.width, canvas.height) / 2;
-                ctx.beginPath();
-                ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-                ctx.strokeStyle = '#ccc';
-                ctx.stroke();
+                const radius = Math.min(canvas.width, canvas.height) / 2 - this.size / 2;
+                const dx = this.x - cx;
+                const dy = this.y - cy;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                if (distance > radius) {
+                    const angle = Math.atan2(dy, dx);
+                    this.x = cx + radius * Math.cos(angle);
+                    this.y = cy + radius * Math.sin(angle);
+                    this.vx *= -1;
+                    this.vy *= -1;
+                }
             }
+        }
+    }
 
-            particles.forEach(p => {
-                p.update();
-                p.draw();
-            });
+    function detectCollisionsFluid() {
+        for (let i = 0; i < particles.length; i++) {
+            for (let j = i + 1; j < particles.length; j++) {
+                const p1 = particles[i];
+                const p2 = particles[j];
 
-            if (typeOfCollision.value == "fluid") {
-                detectCollisionsFluid();
-            } else {
-                detectCollisions();
+                const dx = p1.x - p2.x;
+                const dy = p1.y - p2.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                const minDist = (p1.size + p2.size) / 2;
+
+                if (distance < minDist) {
+                    const angle = Math.atan2(dy, dx);
+                    const overlap = minDist - distance;
+
+                    p1.x += Math.cos(angle) * overlap / 2;
+                    p1.y += Math.sin(angle) * overlap / 2;
+                    p2.x -= Math.cos(angle) * overlap / 2;
+                    p2.y -= Math.sin(angle) * overlap / 2;
+
+                    const vxTotal = p1.vx - p2.vx;
+                    const vyTotal = p1.vy - p2.vy;
+
+                    p1.vx -= vxTotal * 0.5;
+                    p1.vy -= vyTotal * 0.5;
+                    p2.vx += vxTotal * 0.5;
+                    p2.vy += vyTotal * 0.5;
+                }
             }
-            requestAnimationFrame(animate);
+        }
+    }
+
+    function detectCollisions() {
+        for (let i = 0; i < particles.length; i++) {
+            for (let j = i + 1; j < particles.length; j++) {
+                const p1 = particles[i];
+                const p2 = particles[j];
+
+                const dx = p1.x - p2.x;
+                const dy = p1.y - p2.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                const minDist = (p1.size + p2.size) / 2;
+
+                if (distance < minDist) {
+                    const angle = Math.atan2(dy, dx);
+                    const overlap = minDist - distance;
+
+                    // Separate the particles
+                    p1.x += Math.cos(angle) * overlap / 2;
+                    p1.y += Math.sin(angle) * overlap / 2;
+                    p2.x -= Math.cos(angle) * overlap / 2;
+                    p2.y -= Math.sin(angle) * overlap / 2;
+
+                    // Adjust velocities (elastic collision)
+                    const vxTotal = p1.vx - p2.vx;
+                    const vyTotal = p1.vy - p2.vy;
+
+                    const nx = Math.cos(angle);
+                    const ny = Math.sin(angle);
+
+                    const p1Impact = (vxTotal * nx + vyTotal * ny) * nx;
+                    const p2Impact = -(vxTotal * nx + vyTotal * ny) * nx;
+
+                    p1.vx -= p1Impact;
+                    p1.vy -= p1Impact * (ny / nx);
+                    p2.vx -= p2Impact;
+                    p2.vy -= p2Impact * (ny / nx);
+                }
+            }
+        }
+    }
+
+    function applyForce(x, y) {
+        particles.forEach(p => {
+            const dx = x - p.x;
+            const dy = y - p.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            const force = Math.min(200 / (distance + 1), 10);
+            const direction = modeSelector.value === 'pull' ? 1 : -1;
+
+            p.vx += direction * force * (dx / distance);
+            p.vy += direction * force * (dy / distance);
+        });
+    }
+
+    function spawnParticles(shape, count) {
+        particles = [];
+        for (let i = 0; i < count; i++) {
+            let valid = false;
+            let x, y;
+            while (!valid) {
+                x = Math.random() * canvas.width;
+                y = Math.random() * canvas.height;
+                valid = true;
+
+                for (let j = 0; j < particles.length; j++) {
+                    const other = particles[j];
+                    const dx = x - other.x;
+                    const dy = y - other.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < other.size) { // Ensure no overlap
+                        valid = false;
+                        break;
+                    }
+                }
+            }
+            particles.push(new Particle(x, y, shape));
+        }
+    }
+
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        if (blendingEnabled) {
+            ctx.globalCompositeOperation = "screen"; // Blending mode
+        } else {
+            ctx.globalCompositeOperation = "source-over"; // Normal mode
+        }
+        if (containerShape === 'circle') {
+            const cx = canvas.width / 2;
+            const cy = canvas.height / 2;
+            const radius = Math.min(canvas.width, canvas.height) / 2;
+            ctx.beginPath();
+            ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+            ctx.strokeStyle = '#ccc';
+            ctx.stroke();
         }
 
-        canvas.addEventListener('click', (event) => {
+        particles.forEach(p => {
+            p.update();
+            p.draw();
+        });
+
+        if (typeOfCollision.value == "fluid") {
+            detectCollisionsFluid();
+        } else {
+            detectCollisions();
+        }
+        requestAnimationFrame(animate);
+    }
+
+    canvas.addEventListener('click', (event) => {
+        const { x, y } = getAdjustedCoordinates(event);
+        applyForce(x, y);
+    });
+
+    let isDragging = false;
+
+    function getAdjustedCoordinates(event) {
+        const rect = canvas.getBoundingClientRect();
+        let x, y;
+        if (event.touches) {
+            // For touch events
+            x = event.touches[0].clientX - rect.left + rect.left * 0.3;
+            y = event.touches[0].clientY - rect.top;
+        } else {
+            // For mouse events
+            x = event.clientX - rect.left;
+            y = event.clientY - rect.top;
+        }
+        return { x, y };
+    }
+
+    canvas.addEventListener('mousedown', (event) => {
+        event.preventDefault();
+        isDragging = true;
+    });
+
+    canvas.addEventListener('mousemove', (event) => {
+        event.preventDefault();
+        if (isDragging) {
             const { x, y } = getAdjustedCoordinates(event);
             applyForce(x, y);
-        });
-        let isDragging = false;
-        function getAdjustedCoordinates(event) {
-            const rect = canvas.getBoundingClientRect();
-            let x, y;
-            if (event.touches) {
-                // For touch events
-                x = event.touches[0].clientX - rect.left + rect.left * 0.3;
-                y = event.touches[0].clientY - rect.top;
-            } else {
-                // For mouse events
-                x = event.clientX - rect.left;
-                y = event.clientY - rect.top;
-            }
-            return { x, y };
         }
-        canvas.addEventListener('mousedown', (event) => {
-            event.preventDefault();
-            isDragging = true;
-        });
+    });
 
-        canvas.addEventListener('mousemove', (event) => {
-            event.preventDefault();
-            if (isDragging) {
-                const { x, y } = getAdjustedCoordinates(event);
-                applyForce(x, y);
-            }
-        });
+    canvas.addEventListener('mouseup', (event) => {
+        event.preventDefault();
+        isDragging = false;
+    });
 
-        canvas.addEventListener('mouseup', (event) => {
-            event.preventDefault();
-            isDragging = false;
-        });
+    canvas.addEventListener('mouseleave', (event) => {
+        event.preventDefault();
+        isDragging = false; // Stop dragging if the cursor leaves the canvas
+    });
 
-        canvas.addEventListener('mouseleave', (event) => {
-            event.preventDefault();
-            isDragging = false; // Stop dragging if the cursor leaves the canvas
-        });
-        canvas.addEventListener('touchstart', (event) => {
-            event.preventDefault();
-            isDragging = true;
-        });
+    canvas.addEventListener('touchstart', (event) => {
+        event.preventDefault();
+        isDragging = true;
+    });
 
-        canvas.addEventListener('touchmove', (event) => {
-            event.preventDefault();
-            if (isDragging) {
-                const { x, y } = getAdjustedCoordinates(event);
-                applyForce(x, y);
-            }
-        });
+    canvas.addEventListener('touchmove', (event) => {
+        event.preventDefault();
+        if (isDragging) {
+            const { x, y } = getAdjustedCoordinates(event);
+            applyForce(x, y);
+        }
+    });
 
-        canvas.addEventListener('touchend', (event) => {
-            event.preventDefault();
-            isDragging = false;
-        });
+    canvas.addEventListener('touchend', (event) => {
+        event.preventDefault();
+        isDragging = false;
+    });
 
-        canvas.addEventListener('touchcancel', (event) => {
-            isDragging = false;
-        });
-        let c = 0;
-        spawnButton.addEventListener('click', () => {
-            const shape = shapeSelector.value;
-            const count = parseInt(countInput.value, 10);
-            containerShape = containerSelector.value;
-            gravityEnabled = gravityCheckbox.checked;
-            interactionMode = modeSelector.value;
-            if(count > 256 && c==0)
-            {
-                alert("The next message will only be displayed once!");
-                alert("Due to the limitations of CPU based particles increase your particle count at your own discretion!");
-                c=1;
-            }
-            spawnParticles(shape, count);
-        });
+    canvas.addEventListener('touchcancel', (event) => {
+        isDragging = false;
+    });
 
-        animate();
-        // Event listener for the Escape key
-        document.addEventListener('keydown', function(event) {
+    let c = 0;
+    spawnButton.addEventListener('click', () => {
+        const shape = shapeSelector.value;
+        const count = parseInt(countInput.value, 10);
+        containerShape = containerSelector.value;
+        gravityEnabled = gravityCheckbox.checked;
+        interactionMode = modeSelector.value;
+        if(count > 256 && c==0)
+        {
+            alert("The next message will only be displayed once!");
+            alert("Due to the limitations of CPU based particles increase your particle count at your own discretion!");
+            c=1;
+        }
+        spawnParticles(shape, count);
+    });
+
+    // Start the animation loop
+    animate();
+
+    // Function to open the popup
+    function openPopup() {
+        const popup = document.getElementById('popup');
+        const popupOverlay = document.getElementById('popup-overlay');
+        popup.style.display = 'block';
+        popupOverlay.style.display = 'block';
+        document.body.style.overflow = 'hidden'; // Disable scrolling
+    }
+
+    // Function to close the popup
+    function closePopup() {
+        const popup = document.getElementById('popup');
+        const popupOverlay = document.getElementById('popup-overlay');
+        popup.style.display = 'none';
+        popupOverlay.style.display = 'none';
+        document.body.style.overflow = 'auto'; // Enable scrolling
+    }
+
+    // Event listener for the "Got it!" button
+    closeP.addEventListener('click', closePopup);
+
+    // Event listener for the Escape key
+    document.addEventListener('keydown', function(event) {
         if (event.key === 'Escape') {
             closePopup();
         }    
-        });
-        function openPopup() {
-            popup.style.display = 'block';
-            popupOverlay.style.display = 'block';  
-            document.body.style.overflow = 'hidden'; // Disable scrolling
-        }
+    });
 
-        function closePopup() {
-            popup.style.display = 'none';
-            popupOverlay.style.display = 'none';
-            document.body.style.overflow = 'auto'; // Enable scrolling
-        }
+    // **Add the following line to show the popup on page load**
+    window.onload = openPopup;
     </script>
 
 </body>
