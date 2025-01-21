@@ -322,6 +322,18 @@
 </head>
 
 <body>
+    <div class="popup" id="popup">
+        <h2>Welcome to the Particle Simulator</h2>
+        <p>This application is a physics-based particle simulator designed to demonstrate fundamental physics principles in an interactive environment.</p>
+        <h3>Features:</h3>
+        <ul style="text-align: left;">
+            <li><strong>Interactive Controls:</strong> Customize particle shapes, count, and behavior.</li>
+            <li><strong>Real-Time Physics:</strong> Observe particles interacting under forces like gravity and collision.</li>
+            <li><strong>Dynamic Visualization:</strong> Change particle colors and interaction modes for varied simulations.</li>
+        </ul>
+        <p>Use the controls to modify the simulation parameters and watch how particles respond to different physical forces. Click anywhere on the canvas to apply additional forces and influence particle movement.</p>
+        <button id="close-popup">Got it!</button>
+    </div>
     <div class="controls">
         <div class="control-group">
             <label for="shape">Particle Shape</label>
@@ -757,6 +769,23 @@
         });
 
         animate();
+        // Event listener for the Escape key
+        document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            closePopup();
+        }    
+        });
+        function openPopup() {
+            popup.style.display = 'block';
+            popupOverlay.style.display = 'block';  
+            document.body.style.overflow = 'hidden'; // Disable scrolling
+        }
+
+        function closePopup() {
+            popup.style.display = 'none';
+            popupOverlay.style.display = 'none';
+            document.body.style.overflow = 'auto'; // Enable scrolling
+        }
     </script>
 
 </body>
