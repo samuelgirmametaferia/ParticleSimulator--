@@ -134,6 +134,7 @@
             margin-top: 30px;
             border: 2px solid #333;
             transition: height 0.3s ease-in-out;
+
         }
 
         /* Media Queries for Responsiveness */
@@ -323,72 +324,158 @@
 
 <body>
     <div class="controls">
-        <div class="control-group">
-            <label for="shape">Particle Shape</label>
-            <select id="shape">
-                <option value="circle">Circle</option>
-                <option value="square">Square</option>
-            </select>
-        </div>
+        <details>
+            <summary>Particle Settings</summary>
+            <div class="control-group">
+                <label for="shape">Particle Shape</label>
+                <select id="shape">
+                    <option value="circle">Circle</option>
+                    <option value="square">Square</option>
+                </select>
+            </div>
 
-        <div class="control-group">
-            <label for="count">Particle Count</label>
-            <input type="number" id="count" min="1" value="256" placeholder="Particles Count">
-        </div>
+            <div class="control-group">
+                <label for="count">Particle Count</label>
+                <input type="number" id="count" min="1" value="256" placeholder="Particles Count">
+            </div>
 
-        <div class="control-group">
-            <label for="container">Container</label>
-            <select id="container">
-                <option value="rectangle">Rectangle</option>
-                <option value="circle">Circle</option>
-            </select>
-        </div>
+            <div class="control-group">
+                <label for="colorPicker">Pick a color</label>
+                <input type="color" id="colorPicker" value="#FFA208">
+            </div>
 
-        <div class="control-group">
-            <label for="gravity">Enable Gravity</label>
-            <label class="checkbox-container">
-                <input type="checkbox" id="gravity" class="checkbox">
-                <span class="checkbox-custom"></span>
-            </label>
-        </div>
+            <div class="control-group">
+                <label for="blendCheckbox">Enable Single Color</label>
+                <label class="checkbox-container">
+                    <input type="checkbox" id="blendCheckbox" checked class="checkbox">
+                    <span class="checkbox-custom"></span>
+                </label>
+            </div>
 
-        <div class="control-group">
-            <label for="mode">Mode</label>
-            <select id="mode">
-                <option value="pull">Pull</option>
-                <option value="push">Push</option>
-            </select>
-        </div>
+            <div class="control-group">
+                <label for="velocityColorCheckbox">Color by Velocity</label>
+                <label class="checkbox-container">
+                    <input type="checkbox" id="velocityColorCheckbox" class="checkbox">
+                    <span class="checkbox-custom"></span>
+                </label>
+            </div>
+            <div class="control-group">
+                <label>Visualization Mode</label>
+                <div>
+                    <input type="radio" id="modeDensityMap" name="visualizationMode" value="densityMap" checked>
+                    <label for="modeDensityMap">Density Map</label>
+                </div>
+                <div>
+                    <input type="radio" id="modeOutline" name="visualizationMode" value="outline">
+                    <label for="modeOutline">Outline</label>
+                </div>
+                <div>
+                    <input type="radio" id="modeFilled" name="visualizationMode" value="filled">
+                    <label for="modeFilled">Filled Density</label>
+                </div>
+            </div>
+        </details>
 
-        <div class="control-group">
-            <label for="CollisionType">Collision Type</label>
-            <select id="CollisionType">
-                <option value="fluid">FluidCollision</option>
-                <option value="bouncy">Bouncy</option>
-            </select>
-        </div>
+        <!-- Container Settings Group -->
+        <details>
+            <summary>Container Settings</summary>
+            <div class="control-group">
+                <label for="container">Container</label>
+                <select id="container">
+                    <option value="rectangle">Rectangle</option>
+                    <option value="circle">Circle</option>
+                </select>
+            </div>
 
-        <div id="controls" class="control-group">
-            <label for="colorPicker">Pick a color</label>
-            <input type="color" id="colorPicker" value="#FFA208">
-        </div>
+            <div class="control-group">
+                <label for="gravity">Enable Gravity</label>
+                <label class="checkbox-container">
+                    <input type="checkbox" id="gravity" class="checkbox">
+                    <span class="checkbox-custom"></span>
+                </label>
+            </div>
+        </details>
 
-        <div class="control-group">
-            <label for="blendCheckbox">Enable Single Color</label>
-            <label class="checkbox-container">
-                <input type="checkbox" id="blendCheckbox" checked class="checkbox">
-                <span class="checkbox-custom"></span>
-            </label>
-        </div>
+        <!-- Behavior Settings Group -->
+        <details>
+            <summary>Behavior Settings</summary>
+            <div class="control-group">
+                <label for="mode">Mode</label>
+                <select id="mode">
+                    <option value="pull">Pull</option>
+                    <option value="push">Push</option>
+                </select>
+            </div>
 
-        <div class="control-group">
-            <label for="velocityColorCheckbox">Color by Velocity</label>
-            <label class="checkbox-container">
-                <input type="checkbox" id="velocityColorCheckbox" class="checkbox">
-                <span class="checkbox-custom"></span>
-            </label>
-        </div>
+            <div class="control-group">
+                <label for="CollisionType">Collision Type</label>
+                <select id="CollisionType">
+                    <option value="fluid">FluidCollision</option>
+                    <option value="bouncy">Bouncy</option>
+                </select>
+            </div>
+        </details>
 
+        <!-- Optional: Add some basic styling for better appearance -->
+        <style>
+            details {
+                margin-bottom: 10px;
+                border: 1px solid #ccc;
+                padding: 10px;
+                border-radius: 5px;
+            }
+
+            summary {
+                font-weight: bold;
+                cursor: pointer;
+            }
+
+            .control-group {
+                margin-top: 10px;
+            }
+
+            .checkbox-container {
+                display: inline-block;
+                position: relative;
+                padding-left: 35px;
+                cursor: pointer;
+                user-select: none;
+            }
+
+            .checkbox-container .checkbox-custom {
+                position: absolute;
+                top: 0;
+                left: 0;
+                height: 20px;
+                width: 20px;
+                background-color: #eee;
+                border-radius: 4px;
+            }
+
+            .checkbox-container input:checked~.checkbox-custom {
+                background-color: #2196F3;
+            }
+
+            .checkbox-custom:after {
+                content: "";
+                position: absolute;
+                display: none;
+            }
+
+            .checkbox-container input:checked~.checkbox-custom:after {
+                display: block;
+            }
+
+            .checkbox-container .checkbox-custom:after {
+                left: 7px;
+                top: 3px;
+                width: 5px;
+                height: 10px;
+                border: solid white;
+                border-width: 0 3px 3px 0;
+                transform: rotate(45deg);
+            }
+        </style>
         <button id="spawn">Spawn Particles</button>
     </div>
 
@@ -407,53 +494,9 @@
         <p>Click anywhere on the canvas to apply force to the particles.</p>
         <button id="close-popup">Got it!</button>
     </div>
-    <!-- SweetAlert2 JavaScript -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <script>function showPopup(title, text, icon = 'info') {
-            Swal.fire({
-                title: title,
-                html: text,
-                icon: icon,
-                confirmButtonText: 'OK'
-            });
-        }
 
-        // Function to display the information pop-up
-        function showInfoPopup() {
-            Swal.fire({
-                title: 'Welcome to Particle Simulator, Explorer!',
-                html: `
-                    <p>This tool allows you to explore the dynamic interactions of particles within various physics-based environments.</p>
-                    <p>The goal of this tool is to help physics classrooms use more interactive teaching methods!</p>
-<h3>Features:</h3>
-<ul style="text-align: left;">
-    <li><strong>Interactive Controls:</strong> Customize particle shapes, count, and behavior to suit your simulation needs.</li>
-    <li><strong>Real-Time Physics:</strong> Observe particles interacting under forces like gravity and collisions for an immersive experience.</li>
-    <li><strong>Dynamic Visualization:</strong> Change particle colors and interaction modes to visualize different physical phenomena.</li>
-    <li><strong>Customizable Containers:</strong> Choose between different container shapes such as rectangles or circles to confine particle movements.</li>
-    <li><strong>Velocity-Based Coloring:</strong> Visual representation of particle speed through color gradients, enhancing the simulation's insight.</li>
-    <li><strong>Responsive Design:</strong> Enjoy a seamless experience across various devices and screen sizes.</li>
-    <li><strong>Performance Alerts:</strong> Receive notifications when particle counts exceed optimal limits to ensure smooth simulations.</li>
-</ul>
-<h3>How to Use:</h3>
-<ol style="text-align: left;">
-    <li>Use the controls panel to customize your particle simulation settings, including shape, count, and behavior.</li>
-    <li>Click or drag on the canvas to apply forces to the particles, influencing their movement and interactions.</li>
-    <li>Press the "Spawn Particles" button to initialize or reset the simulation with your selected configurations.</li>
-    <li>Toggle gravity or switch between interaction modes to observe different physical effects in action.</li>
-</ol>
-<p>Enjoy experimenting with particle dynamics and uncover the fascinating behaviors of these fundamental elements!</p>
-                `,
-                icon: 'info',
-                confirmButtonText: 'Get Started',
-                width: '600px'
-            });
-        }
-        window.onload = function () {
-            showInfoPopup();
-        };
-        //Particle Code
+    <script>
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
         const shapeSelector = document.getElementById('shape');
@@ -464,11 +507,14 @@
         const spawnButton = document.getElementById('spawn');
         const closeP = document.getElementById("close-popup");
         const typeOfCollision = document.getElementById("CollisionType");
-        canvas.width = window.innerWidth * 0.9;
-        canvas.height = window.innerHeight * 0.7;
-
         const colorPicker = document.getElementById("colorPicker");
         const blendCheckbox = document.getElementById("blendCheckbox");
+        const colorBox = document.getElementById('colorBox'); // Ensure this element exists in your HTML
+        ctx.filter = 'blur(20px)'; // Adjust the blur radius as needed
+
+
+        canvas.width = window.innerWidth * 0.9;
+        canvas.height = window.innerHeight * 0.7;
 
         let particleColor = "#D38301";
         let blendingEnabled = true;
@@ -481,8 +527,8 @@
         blendCheckbox.addEventListener("change", (event) => {
             blendingEnabled = event.target.checked;
         });
-        const colorBox = document.getElementById('colorBox'); // This would be the element displaying the color preview (create this in your HTML if it doesn't exist)
 
+        // Update color preview box
         colorPicker.addEventListener('input', () => {
             colorBox.style.backgroundColor = colorPicker.value;
         });
@@ -491,6 +537,8 @@
         let containerShape = 'rectangle';
         let gravityEnabled = false;
         let interactionMode = 'pull';
+
+        // Event listener to close the popup
         closeP.addEventListener('click', () => {
             document.getElementById('popup').style.display = 'none';
             document.getElementById('popup-overlay').style.display = 'none';
@@ -506,9 +554,11 @@
                 this.color = `hsl(${Math.random() * 360}, 100%, 50%)`;
                 this.shape = shape;
             }
+
             getSpeed() {
                 return Math.sqrt(this.vx ** 2 + this.vy ** 2);
             }
+
             static interpolateColor(color1, color2, factor) {
                 const c1 = parseInt(color1.slice(1), 16);
                 const c2 = parseInt(color2.slice(1), 16);
@@ -522,19 +572,20 @@
 
                 return `rgb(${r}, ${g}, ${b})`;
             }
+
             draw() {
                 const velocityColorCheckbox = document.getElementById("velocityColorCheckbox");
                 if (velocityColorCheckbox.checked) {
                     const speed = this.getSpeed();
                     const hue = Math.min(240, Math.max(0, 240 - speed * 50)); // Adjust the multiplier for desired color effect
                     ctx.fillStyle = `hsl(${hue}, 100%, 50%)`;
-
                 }
                 else if (blendingEnabled) {
                     ctx.fillStyle = particleColor;
                 } else {
                     ctx.fillStyle = this.color;
                 }
+
                 if (this.shape === 'circle') {
                     ctx.beginPath();
                     ctx.arc(this.x, this.y, this.size / 2, 0, Math.PI * 2);
@@ -578,6 +629,7 @@
                 }
             }
         }
+
         function detectCollisionsFluid() {
             for (let i = 0; i < particles.length; i++) {
                 for (let j = i + 1; j < particles.length; j++) {
@@ -650,6 +702,76 @@
             }
         }
 
+        // Density calculation setup
+        const gridSize = 50; // Adjust as needed
+        let densityGrid = Array.from({ length: gridSize }, () => Array(gridSize).fill(0));
+
+        function calculateDensity(particles, containerWidth, containerHeight) {
+            // Reset density grid
+            densityGrid.forEach(row => row.fill(0));
+
+            particles.forEach(particle => {
+                const cellX = Math.floor((particle.x / containerWidth) * gridSize);
+                const cellY = Math.floor((particle.y / containerHeight) * gridSize);
+
+                // Ensure indices are within grid boundaries
+                if (cellX >= 0 && cellX < gridSize && cellY >= 0 && cellY < gridSize) {
+                    densityGrid[cellY][cellX]++;
+                }
+            });
+        }
+
+        function drawDensityMap(ctx, containerWidth, containerHeight) {
+            const cellWidth = containerWidth / gridSize;
+            const cellHeight = containerHeight / gridSize;
+
+            // Find the maximum density to normalize opacity
+            const flatGrid = densityGrid.flat();
+            const maxDensity = Math.max(...flatGrid);
+
+            densityGrid.forEach((row, y) => {
+                row.forEach((count, x) => {
+                    if (count > 0) {
+                        const opacity = count / maxDensity; // Normalize opacity
+                        ctx.fillStyle = `rgba(255, 0, 0, ${opacity})`; // Red color with variable opacity
+                        ctx.fillRect(x * cellWidth, y * cellHeight, cellWidth, cellHeight);
+                    }
+                });
+            });
+        }
+
+        function drawDensityOutlines(ctx, containerWidth, containerHeight) {
+            const cellWidth = containerWidth / gridSize;
+            const cellHeight = containerHeight / gridSize;
+
+            ctx.strokeStyle = 'rgba(0, 0, 0, 0.2)'; // Light black outlines
+            densityGrid.forEach((row, y) => {
+                row.forEach((count, x) => {
+                    if (count > 0) {
+                        ctx.strokeRect(x * cellWidth, y * cellHeight, cellWidth, cellHeight);
+                    }
+                });
+            });
+        }
+
+        function drawFilledDensity(ctx, containerWidth, containerHeight) {
+            const cellWidth = containerWidth / gridSize;
+            const cellHeight = containerHeight / gridSize;
+
+            // Find the maximum density to normalize color brightness
+            const flatGrid = densityGrid.flat();
+            const maxDensity = Math.max(...flatGrid);
+
+            densityGrid.forEach((row, y) => {
+                row.forEach((count, x) => {
+                    if (count > 0) {
+                        const brightness = (count / maxDensity) * 100; // Scale brightness between 0 and 100%
+                        ctx.fillStyle = `hsl(200, 100%, ${brightness}%)`; // Blue hue with variable lightness
+                        ctx.fillRect(x * cellWidth, y * cellHeight, cellWidth, cellHeight);
+                    }
+                });
+            });
+        }
 
         function applyForce(x, y) {
             particles.forEach(p => {
@@ -662,8 +784,9 @@
 
                 p.vx += direction * force * (dx / distance);
                 p.vy += direction * force * (dy / distance);
-            });
+            }); s
         }
+
         function spawnParticles(shape, count) {
             particles = [];
             for (let i = 0; i < count; i++) {
@@ -689,16 +812,24 @@
                 particles.push(new Particle(x, y, shape));
             }
         }
-
-
         function animate() {
-
+            // Clear the canvas for the new frame
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Set blur filter before drawing particles
+            ctx.filter = 'blur(20px)';
+
+            // Set blending mode based on user selection
             if (blendingEnabled) {
                 ctx.globalCompositeOperation = "screen"; // Blending mode
             } else {
                 ctx.globalCompositeOperation = "source-over"; // Normal mode
             }
+
+            // Get selected visualization mode
+            const visualizationMode = document.querySelector('input[name="visualizationMode"]:checked').value;
+
+            // Draw container shape if circle
             if (containerShape === 'circle') {
                 const cx = canvas.width / 2;
                 const cy = canvas.height / 2;
@@ -709,30 +840,39 @@
                 ctx.stroke();
             }
 
+            // Update and draw each particle
             particles.forEach(p => {
                 p.update();
                 p.draw();
             });
 
+            // Detect collisions
             if (typeOfCollision.value == "fluid") {
                 detectCollisionsFluid();
             } else {
                 detectCollisions();
             }
+
+            // Reset filter after drawing particles
+            ctx.filter = 'none';
+
+            // Request the next animation frame
             requestAnimationFrame(animate);
         }
-
+        // Event listeners for canvas interactions
         canvas.addEventListener('click', (event) => {
             const { x, y } = getAdjustedCoordinates(event);
             applyForce(x, y);
         });
+
         let isDragging = false;
+
         function getAdjustedCoordinates(event) {
             const rect = canvas.getBoundingClientRect();
             let x, y;
-            if (event.touches) {
+            if (event.touches && event.touches.length > 0) {
                 // For touch events
-                x = event.touches[0].clientX - rect.left + rect.left * 0.3;
+                x = event.touches[0].clientX - rect.left;
                 y = event.touches[0].clientY - rect.top;
             } else {
                 // For mouse events
@@ -741,6 +881,7 @@
             }
             return { x, y };
         }
+
         canvas.addEventListener('mousedown', (event) => {
             event.preventDefault();
             isDragging = true;
@@ -763,6 +904,7 @@
             event.preventDefault();
             isDragging = false; // Stop dragging if the cursor leaves the canvas
         });
+
         canvas.addEventListener('touchstart', (event) => {
             event.preventDefault();
             isDragging = true;
@@ -784,22 +926,28 @@
         canvas.addEventListener('touchcancel', (event) => {
             isDragging = false;
         });
+
+        // Variable to track alerts
         let c = 0;
+
+        // Event listener for the spawn button
         spawnButton.addEventListener('click', () => {
             const shape = shapeSelector.value;
             const count = parseInt(countInput.value, 10);
             containerShape = containerSelector.value;
             gravityEnabled = gravityCheckbox.checked;
             interactionMode = modeSelector.value;
-            if(count > 256 && c==0)
-            {
+
+            if (count > 256 && c == 0) {
                 alert("The next message will only be displayed once!");
                 alert("Due to the limitations of CPU based particles increase your particle count at your own discretion!");
-                c=1;
+                c = 1;
             }
+
             spawnParticles(shape, count);
         });
 
+        // Initialize and start the animation
         animate();
     </script>
 
