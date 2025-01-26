@@ -328,6 +328,7 @@
             <select id="shape">
                 <option value="circle">Circle</option>
                 <option value="square">Square</option>
+                <option value="hexagon">Hexagon</option>
             </select>
         </div>
 
@@ -335,7 +336,10 @@
             <label for="count">Particle Count</label>
             <input type="number" id="count" min="1" value="256" placeholder="Particles Count">
         </div>
-
+        <div class="control-group">
+            <label for="count">Max Particle Size</label>
+            <input type="number" id="maxSize" min="10" value="15" max="45" placeholder="Don't make it too big!(wink)">
+        </div>
         <div class="control-group">
             <label for="container">Container</label>
             <select id="container">
@@ -349,6 +353,8 @@
             <label class="checkbox-container">
                 <input type="checkbox" id="gravity" class="checkbox">
                 <span class="checkbox-custom"></span>
+
+
             </label>
         </div>
 
@@ -374,19 +380,12 @@
         </div>
 
         <div class="control-group">
-            <label for="blendCheckbox">Enable Single Color</label>
-            <label class="checkbox-container">
-                <input type="checkbox" id="blendCheckbox" checked class="checkbox">
-                <span class="checkbox-custom"></span>
-            </label>
-        </div>
-
-        <div class="control-group">
-            <label for="velocityColorCheckbox">Color by Velocity</label>
-            <label class="checkbox-container">
-                <input type="checkbox" id="velocityColorCheckbox" class="checkbox">
-                <span class="checkbox-custom"></span>
-            </label>
+            <label for="colormode">Coloring Mode</label>
+            <select id="colormode">
+                <option value="singleColor">Enable Single Color</option>
+                <option value="colorRandom">Random Color</option>
+                <option value="colorVelocity">Color by Velocity</option>
+            </select>
         </div>
 
         <button id="spawn">Spawn Particles</button>
@@ -408,7 +407,7 @@
         <button id="close-popup">Got it!</button>
     </div>
     <!-- SweetAlert2 JavaScript -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>function showPopup(title, text, icon = 'info') {
             Swal.fire({
@@ -438,7 +437,7 @@
 </ul>
 <h3>How to Use:</h3>
 <ol style="text-align: left;">
-    <li>Use the controls panel to customize your particle simulation settings, including shape, count, and behavior.</li>
+    <li>Use the controls panel to customize your particle simulation settings, including shape, count, size, and behavior.</li>
     <li>Click or drag on the canvas to apply forces to the particles, influencing their movement and interactions.</li>
     <li>Press the "Spawn Particles" button to initialize or reset the simulation with your selected configurations.</li>
     <li>Toggle gravity or switch between interaction modes to observe different physical effects in action.</li>
@@ -465,28 +464,34 @@
         const spawnButton = document.getElementById('spawn');
         const closeP = document.getElementById("close-popup");
         const typeOfCollision = document.getElementById("CollisionType");
+        const ColoringType = document.getElementById("colormode");
+        const colorPicker = document.getElementById("colorPicker");
+        let particleColor = "#D38301";
         canvas.width = window.innerWidth * 0.9;
         canvas.height = window.innerHeight * 0.7;
-
-        const colorPicker = document.getElementById("colorPicker");
-        const blendCheckbox = document.getElementById("blendCheckbox");
-
-        let particleColor = "#D38301";
-        let blendingEnabled = true;
 
         // Update color and blending mode on user input
         colorPicker.addEventListener("input", (event) => {
             particleColor = event.target.value;
         });
 
-        blendCheckbox.addEventListener("change", (event) => {
-            blendingEnabled = event.target.checked;
-        });
         const colorBox = document.getElementById('colorBox'); // This would be the element displaying the color preview (create this in your HTML if it doesn't exist)
 
         colorPicker.addEventListener('input', () => {
             colorBox.style.backgroundColor = colorPicker.value;
         });
+
+        ColoringType.addEventListener('change', (event) => {
+            // Update the ColoringType based on the dropdown
+            ColoringType.value = event.target.value;
+        });
+
+        ColoringType.addEventListener('change', (event) => {
+            // This will update the value of the coloring mode
+            // The global variable 'ColoringType' will now have the correct selected value
+            alert("Color mode changed to:", event.target.value);
+        });
+
 
         let particles = [];
         let containerShape = 'rectangle';
@@ -496,6 +501,13 @@
             document.getElementById('popup').style.display = 'none';
             document.getElementById('popup-overlay').style.display = 'none';
         });
+        let MI = document.getElementById("maxSize");
+        let maximumParticleSize = parseFloat(document.getElementById("maxSize").value);
+        MI.addEventListener('change', (event) => {
+            let maximumParticleSize = parseFloat(document.getElementById("maxSize").value);
+        }
+        );
+
 
         class Particle {
             constructor(x, y, shape) {
@@ -503,7 +515,7 @@
                 this.y = y;
                 this.vx = Math.random() * 2 - 1;
                 this.vy = Math.random() * 2 - 1;
-                this.size = Math.random() * 10 + 10;
+                this.size = Math.random() * maximumParticleSize + 10;
                 this.color = `hsl(${Math.random() * 360}, 100%, 50%)`;
                 this.shape = shape;
             }
@@ -524,26 +536,50 @@
                 return `rgb(${r}, ${g}, ${b})`;
             }
             draw() {
-                const velocityColorCheckbox = document.getElementById("velocityColorCheckbox");
-                if (velocityColorCheckbox.checked) {
+                if (ColoringType.value == "colorVelocity") {
                     const speed = this.getSpeed();
                     const hue = Math.min(240, Math.max(0, 240 - speed * 50)); // Adjust the multiplier for desired color effect
                     ctx.fillStyle = `hsl(${hue}, 100%, 50%)`;
-
-                }
-                else if (blendingEnabled) {
+                } else if (ColoringType.value == "singleColor") {
+                    ctx.fillStyle = particleColor; // Apply the color picked from the color picker
+                } else if (ColoringType.value == "colorRandom") {
+                    ctx.fillStyle = this.color; // Each particle has a random color
+                } else if (ColoringType.value == "changeCollision") {
+                    // This should never happen here as it's handled in collision detection
                     ctx.fillStyle = particleColor;
                 } else {
-                    ctx.fillStyle = this.color;
+                    // Default case, you can choose any default color here
+                    ctx.fillStyle = "#D38301";  // Set a fallback color
                 }
+
                 if (this.shape === 'circle') {
                     ctx.beginPath();
                     ctx.arc(this.x, this.y, this.size / 2, 0, Math.PI * 2);
                     ctx.fill();
-                } else {
+                } else if (this.shape === 'square') {
                     ctx.fillRect(this.x - this.size / 2, this.y - this.size / 2, this.size, this.size);
+                } else if (this.shape === 'hexagon') {
+                    const hexRadius = this.size / 2; // Use half of size as radius for the hexagon
+
+                    ctx.beginPath();
+                    for (let i = 0; i < 6; i++) {
+                        const angle = Math.PI / 3 * i; // 60 degrees between each vertex
+                        const xVertex = this.x + hexRadius * Math.cos(angle);
+                        const yVertex = this.y + hexRadius * Math.sin(angle);
+
+                        if (i === 0) {
+                            ctx.moveTo(xVertex, yVertex); // Move to the first vertex
+                        } else {
+                            ctx.lineTo(xVertex, yVertex); // Draw lines to each subsequent vertex
+                        }
+                    }
+                    ctx.closePath(); // Close the path to complete the hexagon
+                    ctx.fill();
+                } else {
+                    console.error('Shape not recognized:', this.shape);
                 }
             }
+
 
             update() {
                 if (gravityCheckbox.checked) {
@@ -606,6 +642,10 @@
                         p1.vy -= vyTotal * 0.5;
                         p2.vx += vxTotal * 0.5;
                         p2.vy += vyTotal * 0.5;
+                        if (ColoringType === "changeCollision") {
+                            p1.color = getRandomColor();  // Change to a random color for particle 1
+                            p2.color = getRandomColor();  // Change to a random color for particle 2
+                        }
                     }
                 }
             }
@@ -646,6 +686,10 @@
                         p1.vy -= p1Impact * (ny / nx);
                         p2.vx -= p2Impact;
                         p2.vy -= p2Impact * (ny / nx);
+                        if (ColoringType === "changeCollision") {
+                            p1.color = getRandomColor();  // Change to a random color for particle 1
+                            p2.color = getRandomColor();  // Change to a random color for particle 2
+                        }
                     }
                 }
             }
@@ -695,7 +739,7 @@
         function animate() {
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            if (blendingEnabled) {
+            if (ColoringType == "singleColor") {
                 ctx.globalCompositeOperation = "screen"; // Blending mode
             } else {
                 ctx.globalCompositeOperation = "source-over"; // Normal mode
@@ -789,14 +833,14 @@
         spawnButton.addEventListener('click', () => {
             const shape = shapeSelector.value;
             const count = parseInt(countInput.value, 10);
+            maximumParticleSize = parseFloat(document.getElementById("maxSize").value);
             containerShape = containerSelector.value;
             gravityEnabled = gravityCheckbox.checked;
             interactionMode = modeSelector.value;
-            if(count > 256 && c==0)
-            {
+            if (count > 256 && c == 0) {
                 alert("The next message will only be displayed once!");
                 alert("Due to the limitations of CPU based particles increase your particle count at your own discretion!");
-                c=1;
+                c = 1;
             }
             spawnParticles(shape, count);
         });
