@@ -454,6 +454,9 @@
             showInfoPopup();
         };
         //Particle Code
+        let lastTimestamp = 0; // Store the timestamp of the last frame
+        let deltaTime = 0;      // Store the time difference between frames
+
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
         const shapeSelector = document.getElementById('shape');
@@ -576,14 +579,13 @@
             }
 
 
-            update() {
+            update(deltaTime) {
                 if (gravityCheckbox.checked) {
-                    this.vy += 0.1;
+                    this.vy += 0.1 * deltaTime;  // Apply gravity based on delta time
                 }
 
-                this.x += this.vx;
-                this.y += this.vy;
-
+                this.x += this.vx * deltaTime;  // Move based on delta time
+                this.y += this.vy * deltaTime;
                 if (containerShape === 'rectangle') {
                     if (this.x - this.size / 2 < 0 || this.x + this.size / 2 > canvas.width) {
                         this.vx *= -1;
@@ -732,7 +734,15 @@
 
 
         function animate() {
+            // Calculate delta time
+            if (lastTimestamp === 0) {
+                lastTimestamp = timestamp;
+                requestAnimationFrame(animate);
+                return;
+            }
 
+            deltaTime = (timestamp - lastTimestamp) / 1000; // Convert to seconds
+            lastTimestamp = timestamp;    
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             if (ColoringType == "singleColor") {
                 ctx.globalCompositeOperation = "screen"; // Blending mode
@@ -750,7 +760,7 @@
             }
 
             particles.forEach(p => {
-                p.update();
+                p.update(deltaTime);  // Pass delta time to the particle update method
                 p.draw();
             });
 
