@@ -19,8 +19,8 @@
 
 /* Dark Mode Background */
 body {
-    background-color: #121212;
-    color: #e0e0e0;
+    background-color: #F4F1D7; /* Light Yellow */
+    color: #333; /* Dark Text for Contrast */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -31,10 +31,10 @@ body {
 
 /* Container Styling */
 .controls {
-    background: #1f1f1f;
+    background: #FFEB3B; /* Bright Yellow */
     border-radius: 12px;
     padding: 16px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     width: 100%;
     max-width: 500px;
     box-sizing: border-box;
@@ -48,7 +48,7 @@ body {
     position: absolute;
     top: 10px;
     right: 10px;
-    background-color: #FF5733; /* Red */
+    background-color: #E64A19; /* Red */
     color: white;
     border: none;
     padding: 8px;
@@ -59,7 +59,7 @@ body {
 }
 
 #hide-controls:hover {
-    background-color: #C0392B; /* Dark Red */
+    background-color: #D32F2F; /* Dark Red */
 }
 
 .control-group {
@@ -72,7 +72,7 @@ label {
     font-size: 14px;
     font-weight: 500;
     margin-bottom: 6px;
-    color: #bbb;
+    color: #555; /* Dark Gray for Readability */
 }
 
 /* Input/Select Styling */
@@ -84,8 +84,8 @@ button {
     margin-top: 6px;
     border: 2px solid #333;
     border-radius: 6px;
-    background-color: #2b2b2b;
-    color: #e0e0e0;
+    background-color: #FFEB3B; /* Yellow */
+    color: #333; /* Dark Text */
     font-size: 16px;
 }
 
@@ -94,18 +94,18 @@ input[type="number"] {
 }
 
 button {
-    background-color: #FF9800; /* Yellow */
+    background-color: #D32F2F; /* Red */
     cursor: pointer;
     transition: background-color 0.3s;
     font-weight: bold;
 }
 
 button:hover {
-    background-color: #F57C00; /* Darker Yellow */
+    background-color: #C62828; /* Darker Red */
 }
 
 input[type="checkbox"]:checked {
-    background-color: #FF5733; /* Red */
+    background-color: #FF5722; /* Orange Red */
 }
 
 /* Custom Color Picker */
@@ -118,7 +118,7 @@ input[type="color"] {
 
 /* Hover Effects */
 .control-group:hover {
-    background-color: #121212;
+    background-color: #FFEB3B; /* Yellow */
     border-radius: 8px;
 }
 
@@ -126,7 +126,7 @@ input[type="color"] {
 #canvas {
     width: 100%;
     height: 400px;
-    background-color: #121212;
+    background-color: #FFEB3B; /* Yellow */
     border-radius: 12px;
     margin-top: 30px;
     border: 2px solid #333;
@@ -239,7 +239,7 @@ input[type="color"] {
 /* Button styling */
 #close-popup {
     padding: 10px 20px;
-    background-color: #FF5733; /* Red */
+    background-color: #FF5722; /* Red-Orange */
     color: #fff;
     border: none;
     border-radius: 5px;
@@ -248,7 +248,7 @@ input[type="color"] {
 
 /* Button hover effect */
 #close-popup:hover {
-    background-color: #C0392B; /* Dark Red */
+    background-color: #D84315; /* Darker Red-Orange */
 }
 
 /* General styling for all checkbox containers */
@@ -282,23 +282,23 @@ input[type="color"] {
     left: 4px;
     width: 12px;
     height: 12px;
-    background-color: #FF5733; /* Red */
+    background-color: #FF5722; /* Red-Orange */
 }
 
 /* Custom styling when the checkbox is checked */
 .checkbox:checked+.checkbox-custom {
-    border-color: #FF5733; /* Red */
-    background-color: #FFE0B2; /* Light Yellow */
+    border-color: #FF5722; /* Red-Orange */
+    background-color: #FFEB3B; /* Yellow */
 }
 
 /* Hover effect for checkbox */
 .checkbox-custom:hover {
-    border-color: #FF5733; /* Red */
+    border-color: #FF5722; /* Red-Orange */
 }
 
 /* Focus outline for accessibility */
 .checkbox:focus+.checkbox-custom {
-    box-shadow: 0 0 0 2px rgba(255, 87, 51, 0.4); /* Light Red */
+    box-shadow: 0 0 0 2px rgba(255, 87, 34, 0.4); /* Light Red-Orange */
 }
 
     </style>
