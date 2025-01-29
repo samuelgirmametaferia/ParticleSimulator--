@@ -9,7 +9,7 @@
     <!-- Link to Roboto font from Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* Global Reset */
+   /* Global Reset */
 * {
     margin: 0;
     padding: 0;
@@ -17,10 +17,10 @@
     font-family: 'Roboto', sans-serif;
 }
 
-/* Dark Mode Background */
+/* Background Color */
 body {
-    background-color: #F4F1D7; /* Light Yellow */
-    color: #333; /* Dark Text for Contrast */
+    background-color: #FFFAE1; /* Light Yellow */
+    color: #333; /* Dark text for contrast */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -31,10 +31,10 @@ body {
 
 /* Container Styling */
 .controls {
-    background: #FFEB3B; /* Bright Yellow */
+    background: #FFDD57; /* Yellow */
     border-radius: 12px;
     padding: 16px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     width: 100%;
     max-width: 500px;
     box-sizing: border-box;
@@ -48,7 +48,7 @@ body {
     position: absolute;
     top: 10px;
     right: 10px;
-    background-color: #E64A19; /* Red */
+    background-color: #E53935; /* Red */
     color: white;
     border: none;
     padding: 8px;
@@ -59,7 +59,7 @@ body {
 }
 
 #hide-controls:hover {
-    background-color: #D32F2F; /* Dark Red */
+    background-color: #D32F2F; /* Darker Red */
 }
 
 .control-group {
@@ -72,7 +72,7 @@ label {
     font-size: 14px;
     font-weight: 500;
     margin-bottom: 6px;
-    color: #555; /* Dark Gray for Readability */
+    color: #555; /* Dark Gray for readability */
 }
 
 /* Input/Select Styling */
@@ -84,8 +84,8 @@ button {
     margin-top: 6px;
     border: 2px solid #333;
     border-radius: 6px;
-    background-color: #FFEB3B; /* Yellow */
-    color: #333; /* Dark Text */
+    background-color: #FFDD57; /* Yellow */
+    color: #333; /* Dark text */
     font-size: 16px;
 }
 
@@ -94,14 +94,14 @@ input[type="number"] {
 }
 
 button {
-    background-color: #D32F2F; /* Red */
+    background-color: #E53935; /* Red */
     cursor: pointer;
     transition: background-color 0.3s;
     font-weight: bold;
 }
 
 button:hover {
-    background-color: #C62828; /* Darker Red */
+    background-color: #D32F2F; /* Darker Red */
 }
 
 input[type="checkbox"]:checked {
@@ -118,7 +118,7 @@ input[type="color"] {
 
 /* Hover Effects */
 .control-group:hover {
-    background-color: #FFEB3B; /* Yellow */
+    background-color: #FFDD57; /* Yellow */
     border-radius: 8px;
 }
 
@@ -126,7 +126,7 @@ input[type="color"] {
 #canvas {
     width: 100%;
     height: 400px;
-    background-color: #FFEB3B; /* Yellow */
+    background-color: #FFDD57; /* Yellow */
     border-radius: 12px;
     margin-top: 30px;
     border: 2px solid #333;
@@ -288,7 +288,7 @@ input[type="color"] {
 /* Custom styling when the checkbox is checked */
 .checkbox:checked+.checkbox-custom {
     border-color: #FF5722; /* Red-Orange */
-    background-color: #FFEB3B; /* Yellow */
+    background-color: #FFDD57; /* Yellow */
 }
 
 /* Hover effect for checkbox */
